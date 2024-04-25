@@ -18,6 +18,9 @@ const RegisterZodSchema = z.object({
       required_error: 'gender is required',
     }),
 
+    role: z.string({
+      required_error: 'Role is required',
+    }),
     phoneNumber: z.string({
       required_error: '  phoneNumber  is required',
     }),
