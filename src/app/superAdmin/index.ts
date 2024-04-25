@@ -9,6 +9,7 @@ const superUser = {
   password: config.super_admin_password,
   passwordChangeHistory: [], // Changed to an empty array for consistency
   role: 'superAdmin',
+  gender: 'male',
   phoneNumber: '01734639066',
   userImage: 'https://i.ibb.co/MDL2Nx5/Admin-n.jpg',
   isDeleted: false,
