@@ -4,6 +4,8 @@ import { IUser, UserModel } from '../modules/user/user.model';
 import catchAsync from '../../utils/catchAsync';
 import { paginationHelpers } from '../../helper/paginationHelpers';
 
+import { JwtPayload } from 'jsonwebtoken';
+
 export const getAllUsers: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {
     const { page, limit, sortBy, sortOrder } = req.query;
@@ -96,6 +98,38 @@ export const deleteUserById: RequestHandler = catchAsync(
   },
 );
 
+export const updateProfile: RequestHandler = catchAsync(
+  async (req, res): Promise<void> => {
+    const user = req.user as JwtPayload;
+
+    const { _id } = user;
+    // Assuming user ID is stored in the request object after authentication
+    const updatedUserInfo = req.body; // Assuming the request body contains updated user information
+
+    // Find the user by ID and update the user information
+    const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
+      _id,
+      updatedUserInfo,
+      { new: true },
+    );
+
+    if (updatedUser) {
+      res.status(200).json({
+        statusCode: 200,
+        success: true,
+        message: 'User information updated successfully',
+        updatedUser,
+      });
+    } else {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'User not found',
+      });
+    }
+  },
+);
+
 export const updateUserById: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {
     const userId = req.params.id;
@@ -124,6 +158,7 @@ export const updateUserById: RequestHandler = catchAsync(
     }
   },
 );
+
 export const promoteUser: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {
     const userId = req.params.id;

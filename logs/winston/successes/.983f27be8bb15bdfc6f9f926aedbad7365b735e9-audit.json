@@ -1,0 +1,35 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\.983f27be8bb15bdfc6f9f926aedbad7365b735e9-audit.json",
+    "files": [
+        {
+            "date": 1714070731558,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\usm-2024-26-04-00-success.log",
+            "hash": "d41764efe81e17004a5ddaf6762579b232e3cac0fdb8a2ed3d9435a23a0a6be8"
+        },
+        {
+            "date": 1714073658111,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\usm-2024-26-04-01-success.log",
+            "hash": "4eed7c256d3f04d1ec6785378ccd1b435f8f09ab815e0c4726fdd9bbde9dec78"
+        },
+        {
+            "date": 1714075360987,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\usm-2024-26-04-02-success.log",
+            "hash": "4331d1da8375e2544d004f9dd9f4fb53455b7962de20f4a7e8088c399de7a93d"
+        },
+        {
+            "date": 1714079148007,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\usm-2024-26-04-03-success.log",
+            "hash": "3d5de44ec6578229363a9debeaada74d18c415390a531fd7d78d4e172187d2b3"
+        },
+        {
+            "date": 1714082680950,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\successes\\usm-2024-26-04-04-success.log",
+            "hash": "116ba58acdb629ec62047695bbbb654ab6fe47b6cd87c4ea95cddccfabf035ec"
+        }
+    ],
+    "hashType": "sha256"
+}

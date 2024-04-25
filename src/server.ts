@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import app from './app';
 import config from './config';
 import seedSuperAdmin from './app/superAdmin';
+import { errorlogger, logger } from './utils/logger';
 
 let server: Server;
 
@@ -13,13 +14,28 @@ async function main() {
     seedSuperAdmin();
     server = app.listen(config.port, () => {
       console.log(`app is listening on port ${config.port}`);
+      logger.info(`Server running on port ${config.port}`);
     });
   } catch (err) {
     console.log(err);
   }
 }
 
-main();
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed');
+    });
+  }
+  process.exit(1);
+};
+
+const unexpectedErrorHandler = (error: unknown) => {
+  errorlogger.error(error);
+  exitHandler();
+};
+
+process.on('uncaughtException', unexpectedErrorHandler);
 
 process.on('unhandledRejection', (err) => {
   console.log(`😈 unahandledRejection is detected , shutting down ...`, err);
@@ -35,3 +51,4 @@ process.on('uncaughtException', () => {
   console.log(`😈 uncaughtException is detected , shutting down ...`);
   process.exit(1);
 });
+main();

@@ -32,7 +32,10 @@ const auth = (...roles: string[]) => {
       req.body.userId = user.id;
 
       if (roles.length && !roles.includes(verifiedUser.role)) {
-        throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!');
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          'you are not permeated to access ',
+        );
       }
       next();
     } catch (err) {
