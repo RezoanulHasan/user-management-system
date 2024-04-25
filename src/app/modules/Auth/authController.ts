@@ -10,6 +10,7 @@ import { UserModel } from '../user/user.model';
 import config from '../../../config';
 import catchAsync from '../../../utils/catchAsync';
 import { hashedPassword } from '../../../helper/PasswordHelpers';
+import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
 //.........................register ..................................
 
 export const register: RequestHandler = catchAsync(async (req, res) => {
@@ -77,6 +78,17 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
       data: null,
     });
   }
+  // Upload user image to Cloudinary
+  let uploadedImageUrl;
+  if (userImage) {
+    try {
+      const uploadResult = await sendImageToCloudinary(username, userImage);
+      uploadedImageUrl = uploadResult.secure_url;
+    } catch (error) {
+      console.error('Error uploading user image:', error);
+      // Handle error
+    }
+  }
 
   // Hash the password
   const hashedPasswordValue = await hashedPassword(password);
@@ -86,7 +98,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     username,
     password: hashedPasswordValue,
     email,
-    userImage,
+    userImage: uploadedImageUrl,
     gender,
     phoneNumber,
     address,
