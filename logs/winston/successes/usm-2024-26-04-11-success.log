@@ -1,0 +1,17 @@
+Fri Apr 26 2024 11:2:16 } [USM] info: GET /api/users?page=1&limit=10
+Fri Apr 26 2024 11:2:16 } [USM] info: GET /api/users?page=1&limit=10
+Fri Apr 26 2024 11:2:16 } [USM] info: GET /api/users?page=1&limit=10
+Fri Apr 26 2024 11:2:16 } [USM] info: GET /api/users/123
+Fri Apr 26 2024 11:2:16 } [USM] info: GET /api/users/123
+Fri Apr 26 2024 11:2:16 } [USM] info: DELETE /api/users/123
+Fri Apr 26 2024 11:2:16 } [USM] info: DELETE /api/users/123
+Fri Apr 26 2024 11:2:16 } [USM] info: DELETE /api/users/123
+Fri Apr 26 2024 11:6:41 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 11:7:32 } [USM] info: GET /api/users?page=1&limit=10
+Fri Apr 26 2024 11:7:32 } [USM] info: GET /api/users?page=1&limit=10
+Fri Apr 26 2024 11:7:32 } [USM] info: GET /api/all-users?page=1&limit=10
+Fri Apr 26 2024 11:7:32 } [USM] info: GET /api/users/123
+Fri Apr 26 2024 11:7:32 } [USM] info: GET /api/users/123
+Fri Apr 26 2024 11:7:32 } [USM] info: DELETE /api/users/123
+Fri Apr 26 2024 11:7:32 } [USM] info: DELETE /api/users/123
+Fri Apr 26 2024 11:7:32 } [USM] info: DELETE /api/users/123

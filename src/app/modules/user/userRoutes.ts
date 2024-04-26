@@ -22,14 +22,14 @@ router.get(
 );
 //get user by id
 router.get(
-  '/user/:id',
+  '/users/:id',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   cacheMiddleware,
   getUserById,
 );
 //delete user by id
 router.delete(
-  '/user/:id',
+  '/users/:id',
   auth(USER_ROLE.superAdmin),
   cacheMiddleware,
   deleteUserById,

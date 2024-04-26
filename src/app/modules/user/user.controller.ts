@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
 import { RequestHandler } from 'express';
-import { IUser, UserModel } from '../modules/user/user.model';
-import catchAsync from '../../utils/catchAsync';
-import { paginationHelpers } from '../../helper/paginationHelpers';
-
+import catchAsync from '../../../utils/catchAsync';
+import { redisClient } from '../../../config/configureRedis';
+import { paginationHelpers } from '../../../helper/paginationHelpers';
+import { IUser, UserModel } from './user.model';
 import { JwtPayload } from 'jsonwebtoken';
-import { redisClient } from '../../config/configureRedis';
 
 export const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const { page, limit, sortBy, sortOrder } = req.query;
@@ -73,6 +72,7 @@ export const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
     });
   }
 });
+
 export const getUserById: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const user = await UserModel.findById(userId);
