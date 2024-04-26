@@ -1,0 +1,66 @@
+Fri Apr 26 2024 18:2:58 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:4:13 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:5:27 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:6:39 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:6:58 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 18:7:2 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 18:7:31 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:9:20 } [USM] info: GET /api/users/662ab049add29363ccbc6d6
+Fri Apr 26 2024 18:9:52 } [USM] info: GET /api/users/662ab049add29363ccbc6d6a
+Fri Apr 26 2024 18:18:14 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:19:18 } [USM] info: DELETE /api/users/662b5d74382d5cb3fa36406e
+Fri Apr 26 2024 18:20:7 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 18:21:2 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 18:22:26 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 18:23:4 } [USM] info: DELETE /api/users/662b5d74382d5cb3fa36406e
+Fri Apr 26 2024 18:23:9 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:24:47 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:25:13 } [USM] info: DELETE /api/users/662b5d74382d5cb3fa36406e
+Fri Apr 26 2024 18:25:20 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:6 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:7 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:7 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:9 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:35 } [USM] info: GET /api/users/662b5d74382d5cb3fa36406
+Fri Apr 26 2024 18:26:44 } [USM] info: GET /api/users/662b5d74382d5cb3fa36406e
+Fri Apr 26 2024 18:26:56 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:56 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:57 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:57 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:58 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:26:59 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:27:0 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:27:1 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:27:23 } [USM] info: GET /api/users/662ab073add29363ccbc6d6e
+Fri Apr 26 2024 18:27:33 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:23 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:29 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:29 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:31 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:32 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:33 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:33 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:34 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:34 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:35 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:35 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:29:35 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:30:3 } [USM] info: POST /api/auth/register
+Fri Apr 26 2024 18:30:20 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:48:0 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:48:21 } [USM] info: DELETE /api/users/662b5d74382d5cb3fa36406e
+Fri Apr 26 2024 18:48:26 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:49:0 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:49:25 } [USM] info: DELETE /api/users/662b9e4cc67dee09ede8f347
+Fri Apr 26 2024 18:49:33 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:49:45 } [USM] info: GET /api/user
+Fri Apr 26 2024 18:49:50 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:10 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:40 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:40 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:41 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:43 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:43 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:50:45 } [USM] info: GET /api/users
+Fri Apr 26 2024 18:51:9 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 18:51:17 } [USM] info: POST /api/auth/register

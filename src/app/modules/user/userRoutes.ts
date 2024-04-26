@@ -1,16 +1,18 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
 import {
   deleteUserById,
   getAllUsers,
   getUserById,
   promoteUser,
+  softDeleteUserById,
   updateProfile,
   updateUserById,
 } from './user.controller';
 import { USER_ROLE } from './user.constant';
 import { cacheMiddleware } from '../../middlewares/cacheMiddleware';
 import auth from '../../middlewares/authMiddleware';
+import { upload } from '../../../utils/sendImageToCloudinary';
 
 const router = express.Router();
 //get all user
@@ -30,14 +32,27 @@ router.get(
 //delete user by id
 router.delete(
   '/users/:id',
-  auth(USER_ROLE.superAdmin),
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   cacheMiddleware,
   deleteUserById,
+);
+
+router.delete(
+  '/userSoftDelete/:id',
+  auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  cacheMiddleware,
+  softDeleteUserById,
 );
 // Update own profile
 router.put(
   '/profile',
   auth(USER_ROLE.admin, USER_ROLE.user),
+
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   cacheMiddleware,
   updateProfile,
 );
@@ -45,6 +60,12 @@ router.put(
 router.put(
   '/users/:id',
   auth(USER_ROLE.admin),
+
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   cacheMiddleware,
   updateUserById,
 );

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
 import { RequestHandler } from 'express';
@@ -98,6 +100,53 @@ export const getUserById: RequestHandler = catchAsync(async (req, res) => {
   }
 });
 
+export const softDeleteUserById: RequestHandler = catchAsync(
+  async (req, res) => {
+    const userId = req.params.id;
+    const cacheKey = `deletedUser:${userId}`;
+
+    // Check if the data exists in the cache
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      // If cached data exists, send it as response
+      const parsedData = JSON.parse(cachedData);
+      return res.status(200).json(parsedData);
+    }
+
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true },
+    );
+
+    if (deletedUser) {
+      redisClient.set(
+        cacheKey,
+        JSON.stringify({
+          statusCode: 200,
+          success: true,
+          message: 'User marked as deleted successfully',
+          deletedUser,
+        }),
+        'EX',
+        3600,
+      );
+
+      res.status(200).json({
+        statusCode: 200,
+        success: true,
+        message: 'User marked as deleted successfully',
+        deletedUser,
+      });
+    } else {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'User not found',
+      });
+    }
+  },
+);
 export const deleteUserById: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const cacheKey = `deletedUser:${userId}`;
@@ -110,36 +159,32 @@ export const deleteUserById: RequestHandler = catchAsync(async (req, res) => {
     return res.status(200).json(parsedData);
   }
 
-  const deletedUser = await UserModel.findByIdAndUpdate(
-    userId,
-    { isDeleted: true },
-    { new: true },
-  );
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
 
-  if (deletedUser) {
-    redisClient.set(
-      cacheKey,
-      JSON.stringify({
+    if (deletedUser) {
+      redisClient.del(cacheKey); // Remove the cached data
+
+      res.status(200).json({
         statusCode: 200,
         success: true,
-        message: 'User marked as deleted successfully',
+        message: 'User deleted successfully',
         deletedUser,
-      }),
-      'EX',
-      3600,
-    );
-
-    res.status(200).json({
-      statusCode: 200,
-      success: true,
-      message: 'User marked as deleted successfully',
-      deletedUser,
-    });
-  } else {
-    res.status(404).json({
-      statusCode: 404,
+      });
+    } else {
+      res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'User not found',
+      });
+    }
+  } catch (error) {
+    // Handle errors
+    console.error('Error deleting user:', error);
+    res.status(500).json({
+      statusCode: 500,
       success: false,
-      message: 'User not found',
+      message: 'Internal Server Error',
     });
   }
 });
@@ -149,6 +194,9 @@ export const updateProfile: RequestHandler = catchAsync(async (req, res) => {
   const { _id } = user;
   const updatedUserInfo = req.body;
 
+  // Remove password field from updatedUserInfo
+  delete updatedUserInfo.password;
+
   const updatedUser = await updateUserInDatabase(_id, updatedUserInfo);
 
   if (updatedUser) {
@@ -156,11 +204,14 @@ export const updateProfile: RequestHandler = catchAsync(async (req, res) => {
     const cacheKey = `user:${_id}`;
     redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600);
 
+    // Create a new object excluding the password field
+    const { password, ...updatedUserWithoutPassword } = updatedUser;
+
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'User information updated successfully',
-      updatedUser,
+      updatedUser: updatedUserWithoutPassword,
     });
   } else {
     res.status(404).json({
@@ -175,6 +226,10 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const updatedUserInfo = req.body;
 
+  // Remove password field and passwordChangeHistory field from updatedUserInfo
+  delete updatedUserInfo.password;
+  delete updatedUserInfo.passwordChangeHistory;
+
   const updatedUser = await updateUserInDatabase(userId, updatedUserInfo);
 
   if (updatedUser) {
@@ -182,11 +237,18 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
     const cacheKey = `user:${userId}`;
     redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600); // Cache for 1 hour
 
+    // Create a new object excluding the password and passwordChangeHistory fields
+    const {
+      password,
+      passwordChangeHistory,
+      ...updatedUserWithoutSensitiveInfo
+    } = updatedUser;
+
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'User information updated successfully',
-      updatedUser,
+      updatedUser: updatedUserWithoutSensitiveInfo,
     });
   } else {
     res.status(404).json({
@@ -196,6 +258,7 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
     });
   }
 });
+
 export const promoteUser: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const targetRole = req.body.role;

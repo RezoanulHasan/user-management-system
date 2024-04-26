@@ -10,18 +10,19 @@ import { UserModel } from '../user/user.model';
 import config from '../../../config';
 import catchAsync from '../../../utils/catchAsync';
 import { hashedPassword } from '../../../helper/PasswordHelpers';
-import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
 import { publishToChannel, redisClient } from '../../../config/configureRedis';
 import { JwtPayload } from 'jsonwebtoken';
+import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
+
 //.........................register ..................................
 
+// Route handler for user registration
 export const register: RequestHandler = catchAsync(async (req, res) => {
   const {
     username,
     password,
     email,
     role,
-    userImage,
     gender,
     phoneNumber,
     address,
@@ -61,6 +62,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     });
   }
 
+  // Check if the email is already in use
   const existingUserEmail = await UserModel.findOne({ email });
   if (existingUserEmail) {
     return sendResponse(res, {
@@ -80,27 +82,25 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
       data: null,
     });
   }
-  // Upload user image to Cloudinary
-  let uploadedImageUrl;
-  if (userImage) {
-    try {
-      const uploadResult = await sendImageToCloudinary(username, userImage);
-      uploadedImageUrl = uploadResult.secure_url;
-    } catch (error) {
-      console.error('Error uploading user image:', error);
-      // Handle error
-    }
-  }
 
   // Hash the password
   const hashedPasswordValue = await hashedPassword(password);
+
+  let userImage;
+  if (req.file) {
+    // If a file is uploaded, upload it to Cloudinary
+    const imageName = req.file.originalname;
+    const imagePath = req.file.path;
+    const result = await sendImageToCloudinary(imageName, imagePath);
+    userImage = result.secure_url; // Store the secure URL of the uploaded image
+  }
 
   // Create a new user
   const newUser = new UserModel({
     username,
     password: hashedPasswordValue,
     email,
-    userImage: uploadedImageUrl,
+    userImage, // Assign the user image URL here
     gender,
     phoneNumber,
     address,
@@ -121,7 +121,10 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     },
     config.jwt.secret as string,
   );
+
   await publishToChannel('user_registered', { username: newUser.username });
+
+  // Respond with success message and user data
   sendResponse(res, {
     success: true,
     statusCode: 201,
@@ -142,7 +145,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     },
   });
 });
-//.........................login..................................
+//.......................login..................................
 export const login: RequestHandler = catchAsync(async (req, res) => {
   const { username, password } = req.body;
 
