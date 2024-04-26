@@ -1,9 +1,14 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './config';
 import seedSuperAdmin from './app/superAdmin';
 import { errorlogger, logger } from './utils/logger';
+import { redisClient } from './config/configureRedis';
 
 let server: Server;
 
@@ -25,6 +30,7 @@ const exitHandler = () => {
   if (server) {
     server.close(() => {
       logger.info('Server closed');
+      redisClient.quit(); // Close Redis client
     });
   }
   process.exit(1);

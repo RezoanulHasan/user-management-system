@@ -5,6 +5,7 @@ import catchAsync from '../../utils/catchAsync';
 import { paginationHelpers } from '../../helper/paginationHelpers';
 
 import { JwtPayload } from 'jsonwebtoken';
+import { redisClient } from '../../config/configureRedis';
 
 export const getAllUsers: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {
@@ -48,7 +49,7 @@ export const getAllUsers: RequestHandler = catchAsync(
   },
 );
 
-export const getUserById: RequestHandler = catchAsync(
+export const getUserByIds: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {
     const userId = req.params.id;
     const user: IUser | null = await UserModel.findById(userId);
@@ -69,6 +70,31 @@ export const getUserById: RequestHandler = catchAsync(
     }
   },
 );
+
+export const getUserById: RequestHandler = catchAsync(async (req, res) => {
+  const userId = req.params.id;
+  const user = await UserModel.findById(userId);
+
+  if (user) {
+    // Cache the user data
+    const key = `user:${userId}`;
+    redisClient.set(key, JSON.stringify(user), 'EX', 3600); // Cache for 1 hour (3600 seconds)
+
+    // Send the user data as response
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'Successfully retrieved user by ID',
+      user,
+    });
+  } else {
+    res.status(404).json({
+      statusCode: 404,
+      success: false,
+      message: 'User not found',
+    });
+  }
+});
 
 export const deleteUserById: RequestHandler = catchAsync(
   async (req, res): Promise<void> => {

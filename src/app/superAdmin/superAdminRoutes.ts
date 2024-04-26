@@ -9,6 +9,7 @@ import {
 import express from 'express';
 import { USER_ROLE } from '../modules/user/user.constant';
 import auth from '../middlewares/authMiddleware';
+import { cacheMiddleware } from '../middlewares/cacheMiddleware';
 
 const router = express.Router();
 //get all user
@@ -21,6 +22,7 @@ router.get(
 router.get(
   '/user/:id',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  cacheMiddleware,
   getUserById,
 );
 //delete user by id
