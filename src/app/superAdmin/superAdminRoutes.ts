@@ -16,6 +16,7 @@ const router = express.Router();
 router.get(
   '/all-users',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  cacheMiddleware,
   getAllUsers,
 );
 //get user by id
@@ -26,13 +27,28 @@ router.get(
   getUserById,
 );
 //delete user by id
-router.delete('/user/:id', auth(USER_ROLE.superAdmin), deleteUserById);
+router.delete(
+  '/user/:id',
+  auth(USER_ROLE.superAdmin),
+  cacheMiddleware,
+  deleteUserById,
+);
 // Update own profile
-router.put('/profile', auth(USER_ROLE.admin, USER_ROLE.user), updateProfile);
+router.put(
+  '/profile',
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  cacheMiddleware,
+  updateProfile,
+);
 // Update user by id
-router.put('/user/:id', auth(USER_ROLE.admin), updateUserById);
+router.put('/user/:id', auth(USER_ROLE.admin), cacheMiddleware, updateUserById);
 
 //get user id promote
-router.post('/promote/:id', auth(USER_ROLE.superAdmin), promoteUser);
+router.post(
+  '/promote/:id',
+  auth(USER_ROLE.superAdmin),
+  cacheMiddleware,
+  promoteUser,
+);
 
 export const AdminRoutes = router;
