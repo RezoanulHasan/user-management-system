@@ -12,6 +12,7 @@ import catchAsync from '../../../utils/catchAsync';
 import { hashedPassword } from '../../../helper/PasswordHelpers';
 import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
 import { publishToChannel, redisClient } from '../../../config/configureRedis';
+import { JwtPayload } from 'jsonwebtoken';
 //.........................register ..................................
 
 export const register: RequestHandler = catchAsync(async (req, res) => {
@@ -220,9 +221,6 @@ export const logout: RequestHandler = catchAsync(async (req, res) => {
   // Clear the token cookie
   res.clearCookie('token');
 
-  // Publish a message to the 'user_logged_out' channel
-  await publishToChannel('user_logged_out', { userId: req.user._id }); // Assuming req.user contains the user data
-
   // Send response to client
   sendResponse(res, {
     success: true,
@@ -293,7 +291,7 @@ export const refreshToken: RequestHandler = catchAsync(async (req, res) => {
     });
   }
 });
-
+//..........................change pass ................................
 const PASSWORD_HISTORY_LIMIT = 2;
 
 export const changePassword = async (
@@ -302,10 +300,12 @@ export const changePassword = async (
   next: NextFunction,
 ) => {
   const { currentPassword, newPassword } = req.body;
-  const userId = req.body.userId;
+
+  const user = req.user as JwtPayload;
+  const { _id } = user;
 
   try {
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) {
       return sendResponse(res, {
         success: false,
