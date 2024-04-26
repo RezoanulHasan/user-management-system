@@ -2,7 +2,7 @@
 
 ## Project-type: Back-End
 
-## API-documentation-link: 
+## API-documentation-link: https://documenter.getpostman.com/view/30665703/2sA3Bt3VGc
 
 ## Technology use
 
@@ -149,3 +149,4 @@ to set up and run projects locally
 - npm install
 - npm run build
 - npm run start: dev
+- and also set-up Redis  in you environment
