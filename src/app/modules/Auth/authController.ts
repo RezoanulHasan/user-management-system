@@ -11,6 +11,7 @@ import config from '../../../config';
 import catchAsync from '../../../utils/catchAsync';
 import { hashedPassword } from '../../../helper/PasswordHelpers';
 import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
+import { publishToChannel, redisClient } from '../../../config/configureRedis';
 //.........................register ..................................
 
 export const register: RequestHandler = catchAsync(async (req, res) => {
@@ -119,7 +120,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     },
     config.jwt.secret as string,
   );
-
+  await publishToChannel('user_registered', { username: newUser.username });
   sendResponse(res, {
     success: true,
     statusCode: 201,
@@ -140,7 +141,6 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     },
   });
 });
-
 //.........................login..................................
 export const login: RequestHandler = catchAsync(async (req, res) => {
   const { username, password } = req.body;
@@ -184,6 +184,9 @@ export const login: RequestHandler = catchAsync(async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000, // Refresh token expires in 7 days
       });
 
+      // Publish a message to Redis channel after successful login
+      await redisClient.publish('user_logged_in', JSON.stringify(user));
+
       sendResponse(res, {
         success: true,
         statusCode: 200,
@@ -212,13 +215,15 @@ export const login: RequestHandler = catchAsync(async (req, res) => {
     });
   }
 });
-
 //.........................logout..................................
-
 export const logout: RequestHandler = catchAsync(async (req, res) => {
   // Clear the token cookie
   res.clearCookie('token');
 
+  // Publish a message to the 'user_logged_out' channel
+  await publishToChannel('user_logged_out', { userId: req.user._id }); // Assuming req.user contains the user data
+
+  // Send response to client
   sendResponse(res, {
     success: true,
     statusCode: 200,
@@ -253,6 +258,9 @@ export const refreshToken: RequestHandler = catchAsync(async (req, res) => {
         { expiresIn: config.jwt.expires_in as string },
       );
 
+      // Publish a message to the 'token_refreshed' channel
+      await publishToChannel('token_refreshed', { userId: user._id });
+
       // Send the new access token as a cookie
       res.cookie('token', newAccessToken, {
         httpOnly: true,
@@ -286,7 +294,6 @@ export const refreshToken: RequestHandler = catchAsync(async (req, res) => {
   }
 });
 
-//...............changePassword.............................
 const PASSWORD_HISTORY_LIMIT = 2;
 
 export const changePassword = async (
@@ -294,10 +301,9 @@ export const changePassword = async (
   res: Response,
   next: NextFunction,
 ) => {
-  // try {
   const { currentPassword, newPassword } = req.body;
   const userId = req.body.userId;
-  //const user = await UserModel.findById(userId);
+
   try {
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -369,6 +375,9 @@ export const changePassword = async (
 
     // Save the updated user in the database
     await user.save();
+
+    // Publish a message to the 'password_changed' channel
+    await publishToChannel('password_changed', { userId: user._id });
 
     // Respond with the updated user data
     sendResponse(res, {

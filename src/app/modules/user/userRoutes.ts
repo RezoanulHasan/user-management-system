@@ -15,7 +15,7 @@ import auth from '../../middlewares/authMiddleware';
 const router = express.Router();
 //get all user
 router.get(
-  '/all-users',
+  '/users',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   cacheMiddleware,
   getAllUsers,
@@ -42,7 +42,12 @@ router.put(
   updateProfile,
 );
 // Update user by id
-router.put('/user/:id', auth(USER_ROLE.admin), cacheMiddleware, updateUserById);
+router.put(
+  '/users/:id',
+  auth(USER_ROLE.admin),
+  cacheMiddleware,
+  updateUserById,
+);
 
 //get user id promote
 router.post(

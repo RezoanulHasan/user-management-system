@@ -1,0 +1,6 @@
+Fri Apr 26 2024 12:1:14 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 12:1:22 } [USM] info: GET /api/users
+Fri Apr 26 2024 12:1:34 } [USM] info: POST /api/auth/login
+Fri Apr 26 2024 12:1:54 } [USM] info: GET /api/user/662ab049add29363ccbc6d6a
+Fri Apr 26 2024 12:2:7 } [USM] info: GET /api/users/662ab049add29363ccbc6d6a
+Fri Apr 26 2024 12:2:17 } [USM] info: GET /api/users/662ab049add29363ccbc6d6a
