@@ -89,6 +89,11 @@
             "date": 1714140042658,
             "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\errors\\usm-2024-26-04-20-error.log",
             "hash": "a8dae4e3c04a1cca57a726d14d93a8df54f00c7ed7d539645ef09dabe02c938a"
+        },
+        {
+            "date": 1714143732345,
+            "name": "E:\\Programing Hero level 2\\Full stack level-2\\User Management System\\project-server\\logs\\winston\\errors\\usm-2024-26-04-21-error.log",
+            "hash": "8dba3c29b996f03d2e48b7ec584cb01455292a8131139698f6e37c61570ca89a"
         }
     ],
     "hashType": "sha256"

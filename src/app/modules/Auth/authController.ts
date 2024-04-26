@@ -100,18 +100,16 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     username,
     password: hashedPasswordValue,
     email,
-    userImage, // Assign the user image URL here
-    gender,
+    userImage,
     phoneNumber,
     address,
     age,
     country,
-    role: role || 'user', // Set a default role if not provided
+    role: role || 'user',
   });
 
   await newUser.save();
 
-  // Generate a token for the newly registered user
   const token = jwt.sign(
     {
       _id: newUser._id,

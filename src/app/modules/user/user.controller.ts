@@ -8,6 +8,7 @@ import { redisClient } from '../../../config/configureRedis';
 import { paginationHelpers } from '../../../helper/paginationHelpers';
 import { IUser, UserModel } from './user.model';
 import { JwtPayload } from 'jsonwebtoken';
+import { sendImageToCloudinary } from '../../../utils/sendImageToCloudinary';
 
 export const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const { page, limit, sortBy, sortOrder } = req.query;
@@ -194,24 +195,36 @@ export const updateProfile: RequestHandler = catchAsync(async (req, res) => {
   const { _id } = user;
   const updatedUserInfo = req.body;
 
-  // Remove password field from updatedUserInfo
-  delete updatedUserInfo.password;
+  let userImage;
+  if (req.file) {
+    // If a file is uploaded, upload it to Cloudinary
+    const imageName = req.file.originalname;
+    const imagePath = req.file.path;
+    const result = await sendImageToCloudinary(imageName, imagePath);
+    userImage = result.secure_url; // Store the secure URL of the uploaded image
+  }
 
-  const updatedUser = await updateUserInDatabase(_id, updatedUserInfo);
+  // Update user information, including the userImage field if it was uploaded
+  const updatedUser = await updateUserInDatabase(_id, {
+    ...updatedUserInfo,
+    userImage: userImage || updatedUserInfo.userImage, // Use the uploaded image URL if available, otherwise keep the existing userImage
+  });
 
   if (updatedUser) {
     // Cache the updated user data
     const cacheKey = `user:${_id}`;
     redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600);
 
-    // Create a new object excluding the password field
-    const { password, ...updatedUserWithoutPassword } = updatedUser;
+    // Use Mongoose's select feature to exclude password and isDeleted fields
+    const sanitizedUser = await UserModel.findById(updatedUser._id).select(
+      '-password -isDeleted  -passwordChangeHistory -role',
+    );
 
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'User information updated successfully',
-      updatedUser: updatedUserWithoutPassword,
+      updatedUser: sanitizedUser,
     });
   } else {
     res.status(404).json({
@@ -226,6 +239,20 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const updatedUserInfo = req.body;
 
+  let userImage;
+  if (req.file) {
+    // If a file is uploaded, upload it to Cloudinary
+    const imageName = req.file.originalname;
+    const imagePath = req.file.path;
+    const result = await sendImageToCloudinary(imageName, imagePath);
+    userImage = result.secure_url; // Store the secure URL of the uploaded image
+  }
+
+  // If an image was uploaded, add it to updatedUserInfo
+  if (userImage) {
+    updatedUserInfo.userImage = userImage;
+  }
+
   // Remove password field and passwordChangeHistory field from updatedUserInfo
   delete updatedUserInfo.password;
   delete updatedUserInfo.passwordChangeHistory;
@@ -237,18 +264,16 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
     const cacheKey = `user:${userId}`;
     redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600); // Cache for 1 hour
 
-    // Create a new object excluding the password and passwordChangeHistory fields
-    const {
-      password,
-      passwordChangeHistory,
-      ...updatedUserWithoutSensitiveInfo
-    } = updatedUser;
+    // Use Mongoose's select feature to exclude sensitive fields
+    const sanitizedUser = await UserModel.findById(updatedUser._id).select(
+      '-password -isDeleted -passwordChangeHistory -role',
+    );
 
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'User information updated successfully',
-      updatedUser: updatedUserWithoutSensitiveInfo,
+      updatedUser: sanitizedUser,
     });
   } else {
     res.status(404).json({

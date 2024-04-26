@@ -42,3 +42,5 @@ Fri Apr 26 2024 20:46:4 } [USM] info: POST /api/auth/login
 Fri Apr 26 2024 20:46:11 } [USM] info: POST /api/auth/login
 Fri Apr 26 2024 20:46:42 } [USM] info: DELETE /api/users/662bb5ee8fa688883641ea92
 Fri Apr 26 2024 20:47:6 } [USM] info: GET /api/users
+Fri Apr 26 2024 20:51:30 } [USM] info: Server running on port 5000
+Fri Apr 26 2024 20:58:32 } [USM] info: Server running on port 5000
