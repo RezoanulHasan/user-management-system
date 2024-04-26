@@ -1,6 +1,6 @@
 # Project-name: User-Management-System
 
-## Project-type: DataBase and API Design follow Module Pattern
+## Project-type: Back-End
 
 ## API-documentation-link: 
 
@@ -27,9 +27,9 @@
 - Duplicate Entry
 - Internal Server Error
 
-# API
+- 
 
-Welcome to the Awesome API! This API provides various functionalities for managing courses, categories, and reviews.
+# API  Documentation
 
 ## Table of Contents for users
 
@@ -72,9 +72,6 @@ Welcome to the Awesome API! This API provides various functionalities for managi
   "newPassword": "set_new_password"
 }
 ```
-
-
-
 
 
 
