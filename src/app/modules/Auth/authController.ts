@@ -23,7 +23,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     password,
     email,
     role,
-    gender,
+
     phoneNumber,
     address,
     age,
@@ -105,6 +105,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
     address,
     age,
     country,
+
     role: role || 'user',
   });
 
@@ -137,6 +138,7 @@ export const register: RequestHandler = catchAsync(async (req, res) => {
       phoneNumber: newUser.phoneNumber,
       address: newUser.address,
       age: newUser.age,
+
       country: newUser.country,
       createdAt: newUser.createdAt,
       updatedAt: newUser.updatedAt,
@@ -219,10 +221,8 @@ export const login: RequestHandler = catchAsync(async (req, res) => {
 });
 //.........................logout..................................
 export const logout: RequestHandler = catchAsync(async (req, res) => {
-  // Clear the token cookie
   res.clearCookie('token');
 
-  // Send response to client
   sendResponse(res, {
     success: true,
     statusCode: 200,

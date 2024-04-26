@@ -14,15 +14,12 @@ export const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const { page, limit, sortBy, sortOrder } = req.query;
   const cacheKey = `allUsers:${page}:${limit}:${sortBy}:${sortOrder}`;
 
-  // Check if the data exists in the cache
   const cachedData = await redisClient.get(cacheKey);
   if (cachedData) {
-    // If cached data exists, send it as response
     const parsedData = JSON.parse(cachedData);
     return res.status(200).json(parsedData);
   }
 
-  // Calculate pagination options using the helper function
   const paginationOptions = paginationHelpers.calculatePagination({
     page: page ? parseInt(page as string) : undefined,
     limit: limit ? parseInt(limit as string) : undefined,
@@ -30,8 +27,10 @@ export const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
     sortOrder: sortOrder ? (sortOrder as string) : undefined,
   });
 
-  const users: IUser[] = await UserModel.find()
-    .select('-password')
+  const users: IUser[] = await UserModel.find(
+    {},
+    '-password -passwordChangeHistory',
+  )
     .skip(paginationOptions.skip)
     .limit(paginationOptions.limit);
 
@@ -106,10 +105,8 @@ export const softDeleteUserById: RequestHandler = catchAsync(
     const userId = req.params.id;
     const cacheKey = `deletedUser:${userId}`;
 
-    // Check if the data exists in the cache
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
-      // If cached data exists, send it as response
       const parsedData = JSON.parse(cachedData);
       return res.status(200).json(parsedData);
     }
@@ -152,10 +149,8 @@ export const deleteUserById: RequestHandler = catchAsync(async (req, res) => {
   const userId = req.params.id;
   const cacheKey = `deletedUser:${userId}`;
 
-  // Check if the data exists in the cache
   const cachedData = await redisClient.get(cacheKey);
   if (cachedData) {
-    // If cached data exists, send it as response
     const parsedData = JSON.parse(cachedData);
     return res.status(200).json(parsedData);
   }
@@ -201,13 +196,12 @@ export const updateProfile: RequestHandler = catchAsync(async (req, res) => {
     const imageName = req.file.originalname;
     const imagePath = req.file.path;
     const result = await sendImageToCloudinary(imageName, imagePath);
-    userImage = result.secure_url; // Store the secure URL of the uploaded image
+    userImage = result.secure_url;
   }
 
-  // Update user information, including the userImage field if it was uploaded
   const updatedUser = await updateUserInDatabase(_id, {
     ...updatedUserInfo,
-    userImage: userImage || updatedUserInfo.userImage, // Use the uploaded image URL if available, otherwise keep the existing userImage
+    userImage: userImage || updatedUserInfo.userImage,
   });
 
   if (updatedUser) {
@@ -215,7 +209,7 @@ export const updateProfile: RequestHandler = catchAsync(async (req, res) => {
     const cacheKey = `user:${_id}`;
     redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600);
 
-    // Use Mongoose's select feature to exclude password and isDeleted fields
+    // exclude password and isDeleted fields
     const sanitizedUser = await UserModel.findById(updatedUser._id).select(
       '-password -isDeleted  -passwordChangeHistory -role',
     );
@@ -241,11 +235,10 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
 
   let userImage;
   if (req.file) {
-    // If a file is uploaded, upload it to Cloudinary
     const imageName = req.file.originalname;
     const imagePath = req.file.path;
     const result = await sendImageToCloudinary(imageName, imagePath);
-    userImage = result.secure_url; // Store the secure URL of the uploaded image
+    userImage = result.secure_url;
   }
 
   // If an image was uploaded, add it to updatedUserInfo
@@ -260,11 +253,9 @@ export const updateUserById: RequestHandler = catchAsync(async (req, res) => {
   const updatedUser = await updateUserInDatabase(userId, updatedUserInfo);
 
   if (updatedUser) {
-    // Cache the updated user data
     const cacheKey = `user:${userId}`;
-    redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600); // Cache for 1 hour
+    redisClient.set(cacheKey, JSON.stringify(updatedUser), 'EX', 3600);
 
-    // Use Mongoose's select feature to exclude sensitive fields
     const sanitizedUser = await UserModel.findById(updatedUser._id).select(
       '-password -isDeleted -passwordChangeHistory -role',
     );
@@ -290,37 +281,33 @@ export const promoteUser: RequestHandler = catchAsync(async (req, res) => {
 
   const user = await UserModel.findById(userId);
 
-  if (user) {
-    // Check if the user is a super admin before promoting
-    if (req.body.user?.role === 'superAdmin') {
-      user.role = targetRole;
-      await user.save();
-
-      // Cache the updated user data
-      const cacheKey = `user:${userId}`;
-      redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600);
-
-      res.status(200).json({
-        statusCode: 200,
-        success: true,
-        message: `User promoted to ${targetRole} successfully`,
-        user,
-      });
-    } else {
-      res.status(403).json({
-        statusCode: 403,
-        success: false,
-        message: 'Unauthorized Access',
-        error: 'Super admin rights required to promote users',
-      });
-    }
-  } else {
-    res.status(404).json({
+  if (!user) {
+    return res.status(404).json({
       statusCode: 404,
       success: false,
       message: 'User not found',
     });
   }
+
+  // Update user role
+  user.role = targetRole;
+  await user.save();
+
+  // Cache the updated user data
+  const cacheKey = `user:${userId}`;
+  redisClient.set(cacheKey, JSON.stringify(user), 'EX', 3600);
+
+  // Retrieve sanitized user data
+  const sanitizedUser = await UserModel.findById(user._id).select(
+    '-password -isDeleted -passwordChangeHistory -address ',
+  );
+
+  res.status(200).json({
+    statusCode: 200,
+    success: true,
+    message: `User promoted to ${targetRole} successfully`,
+    updatedUser: sanitizedUser,
+  });
 });
 
 async function updateUserInDatabase(

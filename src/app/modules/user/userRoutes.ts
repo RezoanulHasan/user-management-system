@@ -29,21 +29,21 @@ router.get(
   cacheMiddleware,
   getUserById,
 );
-//delete user by id
+//delete user by id  hard deleted remove from DB
 router.delete(
   '/users/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   cacheMiddleware,
   deleteUserById,
 );
-
+//delete user by id  soft deleted not remove from DB just update status
 router.delete(
   '/userSoftDelete/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   cacheMiddleware,
   softDeleteUserById,
 );
-// Update own profile
+// user and admin Update own profile
 router.put(
   '/profile',
   auth(USER_ROLE.admin, USER_ROLE.user),
@@ -56,7 +56,7 @@ router.put(
   cacheMiddleware,
   updateProfile,
 );
-// Update user by id
+// Update user by id   only admin
 router.put(
   '/users/:id',
   auth(USER_ROLE.admin),

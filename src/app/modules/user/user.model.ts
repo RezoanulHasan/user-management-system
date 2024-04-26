@@ -8,7 +8,7 @@ export interface IUser extends Document {
   role: 'superAdmin' | 'user' | 'admin';
   passwordChangeHistory: { password: string; timestamp: Date }[];
   userImage?: string;
-  gender: 'male' | 'female';
+  gender?: 'male' | 'female';
   phoneNumber: string;
   address?: string;
   age?: number;
@@ -31,7 +31,7 @@ const UserSchema: Schema = new Schema(
       default: 'user',
     },
 
-    gender: { type: String, enum: ['male', 'female'], required: true },
+    gender: { type: String, enum: ['male', 'female'] },
     phoneNumber: { type: String, required: true },
     address: { type: String },
     age: { type: Number },
