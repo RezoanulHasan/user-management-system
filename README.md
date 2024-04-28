@@ -27,9 +27,7 @@
 - Duplicate Entry
 - Internal Server Error
 
-- 
-
-# API  Documentation
+# API Documentation
 
 ## Table of Contents for users
 
@@ -43,7 +41,7 @@
   "username": "your_username",
   "password": "your_password",
   "email": "your_email@example.com",
-" phone":"your_number"
+"phoneNumber":"your_number",
   "role": "user"/"admin"
 }
 
@@ -72,17 +70,15 @@
 }
 ```
 
-
-
-## For  update userinfo
+## For update userinfo
 
 - **Endpoint**: `PUT /api/users/:id`
 - **Request Headers**:
-  - Authorization: `<JWT_TOKEN>`  
+  - Authorization: `<JWT_TOKEN>`
 - **Access:** `admin`
 - **Request Body:** data formate like this \*
 - Admins can update their information or any user information.
-  
+
 ```json
 
 {
@@ -95,17 +91,18 @@
 }
 
 ```
-  
 
 ### 9. Update My Profile
-- Users can  update their information such as name, image, email, address, and
-phone number, but cannot perform any update operation on other users.
+
+- Users can update their information such as name, image, email, address, and
+  phone number, but cannot perform any update operation on other users.
 
 - **Endpoint**: `PUT /api/my-profile`
 - **Request Headers**:
   - Authorization: `<JWT_TOKEN>`
- - **Access:** `admin` and  `user`
- - 
+- **Access:** `admin` and `user`
+-
+
 ```json
 
 {
@@ -119,7 +116,7 @@ phone number, but cannot perform any update operation on other users.
 
 ```
 
-## For ADMIN 
+## For ADMIN
 
 ### Get all users with pagination
 
@@ -134,11 +131,11 @@ phone number, but cannot perform any update operation on other users.
 - **Access:** `admin`
 
 ### Delete a user
--  Delete form  user model and   user profile
+
+- Delete form user model and user profile
 - **Endpoint:** `/api/users/:id`
 - **Method:** `Delete`
 - **Access:** `admin`
-
 
 ## Getting Started
 
@@ -148,4 +145,4 @@ to set up and run projects locally
 - npm install
 - npm run build
 - npm run start: dev
-- and also set-up Redis  in you environment
+- and also set-up Redis in you environment

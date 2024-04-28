@@ -43,6 +43,7 @@ router.delete(
   cacheMiddleware,
   softDeleteUserById,
 );
+
 // user and admin Update own profile
 router.put(
   '/profile',
