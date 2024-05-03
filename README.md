@@ -41,7 +41,8 @@
   "username": "your_username",
   "password": "your_password",
   "email": "your_email@example.com",
-"phoneNumber":"your_number",
+   "phoneNumber":"your_number",
+  "address"  : "your_address",
   "role": "user"/"admin"
 }
 
@@ -62,7 +63,7 @@
 - **Method:** `POST`
 - **Access:** `Authenticated User  `
 - **Request Body:** data formate like this \*
-
+- not use the same password more than two times.
 ```json
 {
   "currentPassword": "your_current_password",
@@ -83,10 +84,10 @@
 
 {
   "username": "your_username",
-  "password": "your_password",
   "email": "your_email@example.com",
-  "gender"":"your-gender",
-" phone":"your_number"
+  "age":"your_age",
+ "address"  : "your_address",
+"phoneNumber":"your_number"
 
 }
 
@@ -107,10 +108,10 @@
 
 {
   "username": "your_username",
-  "password": "your_password",
   "email": "your_email@example.com",
-  "gender"":"your-gender",
-" phone":"your_number"
+  "age":"your_age",
+ "address"  : "your_address",
+"phoneNumber":"your_number"
 
 }
 
